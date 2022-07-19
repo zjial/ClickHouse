@@ -2590,14 +2590,14 @@ void InterpreterSelectQuery::executeProjection(QueryPlan & query_plan, const Act
 }
 
 
-void InterpreterSelectQuery::executeDistinct(QueryPlan & query_plan, bool before_order, Names columns, bool pre_distinct)
+void InterpreterSelectQuery::executeDistinct(QueryPlan & query_plan, bool before_order, const Names & columns, bool pre_distinct)
 {
-    auto & query = getSelectQuery();
+    const auto & query = getSelectQuery();
     if (query.distinct)
     {
         const Settings & settings = context->getSettingsRef();
 
-        auto [limit_length, limit_offset] = getLimitLengthAndOffset(query, context);
+        const auto [limit_length, limit_offset] = getLimitLengthAndOffset(query, context);
         UInt64 limit_for_distinct = 0;
 
         /// If after this stage of DISTINCT ORDER BY is not executed,
@@ -2605,7 +2605,7 @@ void InterpreterSelectQuery::executeDistinct(QueryPlan & query_plan, bool before
         if ((!query.orderBy() || !before_order) && limit_length <= std::numeric_limits<UInt64>::max() - limit_offset)
             limit_for_distinct = limit_length + limit_offset;
 
-        SizeLimits limits(settings.max_rows_in_distinct, settings.max_bytes_in_distinct, settings.distinct_overflow_mode);
+        const SizeLimits limits(settings.max_rows_in_distinct, settings.max_bytes_in_distinct, settings.distinct_overflow_mode);
 
         auto distinct_step = std::make_unique<DistinctStep>(
             query_plan.getCurrentDataStream(),

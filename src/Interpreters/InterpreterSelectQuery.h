@@ -183,7 +183,7 @@ private:
     void executeLimit(QueryPlan & query_plan);
     void executeOffset(QueryPlan & query_plan);
     static void executeProjection(QueryPlan & query_plan, const ActionsDAGPtr & expression);
-    void executeDistinct(QueryPlan & query_plan, bool before_order, Names columns, bool pre_distinct);
+    void executeDistinct(QueryPlan & query_plan, bool before_order, const Names & columns, bool pre_distinct);
     void executeExtremes(QueryPlan & query_plan);
     void executeSubqueriesInSetsAndJoins(QueryPlan & query_plan, std::unordered_map<String, SubqueryForSet> & subqueries_for_sets);
     void
