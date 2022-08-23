@@ -104,6 +104,30 @@ Chunk IRowInputFormat::generate()
             }
             catch (Exception & e)
             {
+                /// Record error info for this row
+                String diagnostic;
+                String raw_data;
+                try
+                {
+                    std::tie(diagnostic, raw_data) = getDiagnosticAndRawData();
+                }
+                catch (const Exception & exception)
+                {
+                    diagnostic = "Cannot get diagnostic: " + exception.message();
+                    raw_data = "Cannot get raw data: " + exception.message();
+                }
+                catch (...)
+                {
+                    /// Error while trying to obtain verbose diagnostic. Ok to ignore.
+                }
+                trimRight(diagnostic, '\n');
+
+                auto now_time = time(nullptr);
+                std::stringstream ss;
+                ss << std::put_time(std::localtime(&now_time), "%F %T");
+
+                addErrorRow(InputFormatErrorRow{ss.str(), total_rows, diagnostic, raw_data});
+
                 /// Logic for possible skipping of errors.
 
                 if (!isParseError(e.code()))
