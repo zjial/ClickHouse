@@ -1124,10 +1124,13 @@ void ClientBase::processInsertQuery(const String & query_to_execute, ASTPtr pars
         bool change = false;
         if (global_context->getInsertionTable().empty() && parsed_insert_query.table)
         {
-            change = true;
-            String database = parsed_insert_query.database ? parsed_insert_query.database->as<ASTIdentifier &>().shortName() : "";
             String table = parsed_insert_query.table->as<ASTIdentifier &>().shortName();
-            global_context->setInsertionTable(StorageID(database, table));
+            if (!table.empty())
+            {
+                change = true;
+                String database = parsed_insert_query.database ? parsed_insert_query.database->as<ASTIdentifier &>().shortName() : "";
+                global_context->setInsertionTable(StorageID(database, table));
+            }
         }
 
         sendData(sample, columns_description, parsed_query);
