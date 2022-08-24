@@ -591,10 +591,6 @@ public:
                                 << error_row.reason << "\nRaw data: " << error_row.raw_data << "\n------\n";
                     out.close();
                 }
-                else
-                {
-                    std::cout << "Failed to open file that records error rows." << std::endl;
-                }
             }
         }
     }

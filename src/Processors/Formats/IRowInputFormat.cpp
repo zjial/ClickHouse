@@ -1,7 +1,8 @@
 #include <Processors/Formats/IRowInputFormat.h>
 #include <DataTypes/ObjectUtils.h>
-#include <IO/WriteHelpers.h>    // toString
 #include <IO/WithFileName.h>
+#include <IO/WriteBufferFromString.h>
+#include <IO/Operators.h>
 #include <Common/logger_useful.h>
 
 
@@ -123,10 +124,12 @@ Chunk IRowInputFormat::generate()
                 trimRight(diagnostic, '\n');
 
                 auto now_time = time(nullptr);
-                std::stringstream ss;
-                ss << std::put_time(std::localtime(&now_time), "%F %T");
+                char tmp[32];
+                std::strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", std::localtime(&now_time));
+                WriteBufferFromOwnString time_buf;
+                time_buf << tmp;
 
-                addErrorRow(InputFormatErrorRow{ss.str(), total_rows, diagnostic, raw_data});
+                addErrorRow(InputFormatErrorRow{time_buf.str(), total_rows, diagnostic, raw_data});
 
                 /// Logic for possible skipping of errors.
 

@@ -1381,7 +1381,7 @@ try
         if (!have_more_data)
             connection->sendData({}, "", false);
     }
-    catch(...)
+    catch (...)
     {
         errorRowsSink(pipeline);
         throw;
