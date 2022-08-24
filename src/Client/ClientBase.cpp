@@ -33,7 +33,6 @@
 #include <Common/filesystemHelpers.h>
 #include <Common/Config/configReadClient.h>
 #include <Common/NetException.h>
-#include <Common/ShellCommand.h>
 #include <Storages/ColumnsDescription.h>
 
 #include <Client/ClientBaseHelpers.h>
@@ -1123,11 +1122,11 @@ void ClientBase::processInsertQuery(const String & query_to_execute, ASTPtr pars
         /// If structure was received (thus, server has not thrown an exception),
         /// send our data with that structure.
         bool change = false;
-        if (global_context->getInsertionTable().empty())
+        if (global_context->getInsertionTable().empty() && parsed_insert_query.table)
         {
             change = true;
             String database = parsed_insert_query.database ? parsed_insert_query.database->as<ASTIdentifier &>().shortName() : "";
-            String table = parsed_insert_query.table ? parsed_insert_query.table->as<ASTIdentifier &>().shortName() : "";
+            String table = parsed_insert_query.table->as<ASTIdentifier &>().shortName();
             global_context->setInsertionTable(StorageID(database, table));
         }
 
@@ -1150,21 +1149,17 @@ void ClientBase::errorRowsSink(const QueryPipeline & pipeline)
             return;
 
         String file_name = global_context->getSettingsRef().input_format_record_errors_table_or_file_name;
-        String file_path;
-        auto command = DB::ShellCommand::execute("pwd");
-        readStringUntilEOF(file_path, command->out);
-        std::cout << "The file that records error rows will be placed: " << file_path << std::endl;
-
         String database_name;
+        String table_name;
         try
         {
+            table_name = global_context->getInsertionTable().getTableName();
             database_name = global_context->getInsertionTable().getDatabaseName();
         }
         catch (...)
         {
             /// Ignore
         }
-        const String & table_name = global_context->getInsertionTable().getTableName();
 
         const auto & multi_error_rows = input_format->getMultiErrorRows();
 

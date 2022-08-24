@@ -38,7 +38,6 @@
 #include <Common/typeid_cast.h>
 #include <Common/parseGlobs.h>
 #include <Common/filesystemHelpers.h>
-#include <Common/ShellCommand.h>
 
 #include <QueryPipeline/Pipe.h>
 #include <QueryPipeline/QueryPipelineBuilder.h>
@@ -521,15 +520,16 @@ public:
 
             String table_or_file_name = context->getSettingsRef().input_format_record_errors_table_or_file_name;
             String database_name;
+            String table_name;
             try
             {
+                table_name = context->getInsertionTable().getTableName();
                 database_name = context->getInsertionTable().getDatabaseName();
             }
             catch (...)
             {
                 /// Ignore
             }
-            const String & table_name = context->getInsertionTable().getTableName();
 
             if (context->hasGlobalContext() && (context->getGlobalContext()->getApplicationType() == Context::ApplicationType::SERVER))
             {
@@ -580,11 +580,6 @@ public:
             else
             {
                 const auto & multi_error_rows = input_format->getMultiErrorRows();
-
-                String file_path;
-                auto command = ShellCommand::execute("pwd");
-                readStringUntilEOF(file_path, command->out);
-                std::cout << "The file that records error rows will be placed: " << file_path << std::endl;
 
                 std::ofstream out(table_or_file_name, std::ios::app);
                 if (out.is_open())

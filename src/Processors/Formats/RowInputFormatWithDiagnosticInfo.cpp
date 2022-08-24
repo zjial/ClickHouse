@@ -110,8 +110,8 @@ std::tuple<String, String> RowInputFormatWithDiagnosticInfo::getDiagnosticAndRaw
     size_t bytes_read_at_start_of_buffer = in->count() - in->offset();
     if (bytes_read_at_start_of_buffer != bytes_read_at_start_of_buffer_on_prev_row)
     {
-        out_diag << "Could not collect diagnostic because two last rows aren't in buffer (rare case)";
-        out_data << "Could not collect raw data because two last rows aren't in buffer (rare case)";
+        out_diag << "Could not collect diagnostic because two last rows are not in buffer (rare case)";
+        out_data << "Could not collect raw data because two last rows are not in buffer (rare case)";
         return std::make_tuple(out_diag.str(), out_data.str());
     }
 
@@ -129,8 +129,8 @@ std::tuple<String, String> RowInputFormatWithDiagnosticInfo::getDiagnosticAndRaw
 
     if (in->buffer().size() < offset_of_current_row)
     {
-        out_diag << "Could not collect diagnostic because parsing of data hasn't started.";
-        out_data << "Could not collect raw data because parsing of data hasn't started.";
+        out_diag << "Could not collect diagnostic because parsing of data has not started.";
+        out_data << "Could not collect raw data because parsing of data has not started.";
         return std::make_tuple(out_diag.str(), out_data.str());
     }
 
