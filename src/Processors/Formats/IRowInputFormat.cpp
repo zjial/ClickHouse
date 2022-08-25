@@ -3,6 +3,7 @@
 #include <IO/WithFileName.h>
 #include <IO/WriteBufferFromString.h>
 #include <IO/Operators.h>
+#include <base/chrono_io.h>
 #include <Common/logger_useful.h>
 
 
@@ -124,12 +125,8 @@ Chunk IRowInputFormat::generate()
                 trimRight(diagnostic, '\n');
 
                 auto now_time = time(nullptr);
-                char tmp[32];
-                std::strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", std::localtime(&now_time));
-                WriteBufferFromOwnString time_buf;
-                time_buf << tmp;
 
-                addErrorRow(InputFormatErrorRow{time_buf.str(), total_rows, diagnostic, raw_data});
+                addErrorRow(InputFormatErrorRow{to_string(now_time), total_rows, diagnostic, raw_data});
 
                 /// Logic for possible skipping of errors.
 

@@ -553,10 +553,10 @@ public:
                     String insert_query = "insert into " + table_or_file_name + " values ";
                     for (auto & error_row : error_rows)
                     {
-                        for (size_t i = 0; i < error_row.reason.size(); ++i)
+                        for (char & ch : error_row.reason)
                         {
-                            if (error_row.reason[i] == '\'')
-                                error_row.reason[i] = '_';
+                            if (ch == '\'')
+                                ch = '_';
                         }
                         insert_query = insert_query + "('" + error_row.time + "','" + database_name + "','" + table_name + "',"
                             + toString(error_row.offset) + ",'" + error_row.reason + "','" + error_row.raw_data + "'),";
