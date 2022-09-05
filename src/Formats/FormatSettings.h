@@ -284,6 +284,11 @@ struct FormatSettings
         bool use_replace = false;
         bool quote_names = true;
     } sql_insert;
+
+    enum class ErrorsOutputFormat
+    {
+        CSV,
+    };
 };
 
 }
