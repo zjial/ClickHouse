@@ -44,7 +44,7 @@ InputFormatErrorsLogger::InputFormatErrorsLogger(
     RowOutputFormatParams out_params;
 
     if (output_format == FormatSettings::ErrorsOutputFormat::CSV)
-        writer = std::make_shared<CSVRowOutputFormat>(*write_buf.get(), header, false, false, out_params, format_settings);
+        writer = std::make_shared<CSVRowOutputFormat>(*write_buf, header, false, false, out_params, format_settings);
 }
 
 void InputFormatErrorsLogger::logErrorImpl(ErrorEntry entry)
