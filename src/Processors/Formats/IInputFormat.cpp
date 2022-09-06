@@ -23,6 +23,10 @@ InputFormatErrorsLogger::InputFormatErrorsLogger(
     {
         trimLeft(path_in_setting, '/');
     }
+    else if (!is_changed)
+    {
+        path_in_setting = "/tmp/" + path_in_setting;
+    }
     errors_file_path = user_files_path + path_in_setting;
     if (is_changed)
     {
