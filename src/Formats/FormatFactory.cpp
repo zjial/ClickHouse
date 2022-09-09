@@ -237,7 +237,7 @@ InputFormatPtr FormatFactory::getInput(
             buf, sample, parser_creator, file_segmentation_engine, name, settings.max_threads, settings.min_chunk_bytes_for_parallel_parsing,
                context->getApplicationType() == Context::ApplicationType::SERVER};
         auto format = std::make_shared<ParallelParsingInputFormat>(params);
-        if (!context->getSettingsRef().input_format_record_errors_file_path.toString().empty())
+        if (!settings.input_format_record_errors_file_path.toString().empty())
         {
             format->setErrorsLogger(std::make_shared<ParallelInputFormatErrorsLogger>(context));
         }
@@ -246,7 +246,7 @@ InputFormatPtr FormatFactory::getInput(
 
 
     auto format = getInputFormat(name, buf, sample, context, max_block_size, format_settings);
-    if (!context->getSettingsRef().input_format_record_errors_file_path.toString().empty())
+    if (!settings.input_format_record_errors_file_path.toString().empty())
     {
         format->setErrorsLogger(std::make_shared<InputFormatErrorsLogger>(context));
     }
